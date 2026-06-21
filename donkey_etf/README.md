@@ -97,7 +97,7 @@ python analysis/a1_individual.py   # 레벨별 개별 실행도 가능
 
 직접 ETF를 설계·백테스트하고 그 과정을 블로그에 풀어내는 개인 투자자.
 
-- 📝 **블로그(DONKEY-LAB):** (https://donkey-lab.tistory.com)
+- 📝 **블로그(DONKEY-LAB):** '(https://donkey-lab.tistory.com)'
 
 ---
 
