@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1천만 원 생존 레이싱 · ACE ETF 체험판</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1020; --surface:#151B2E; --surface2:#1B2238; --line:#28324E;
+    --tx:#E8ECF6; --mut:#8893AC; --mut2:#56607C;
+    --gold:#F5C542; --red:#FF4B57; --blue:#5B8DEF; --mint:#4FE0B0; --coral:#FF5470;
+    --r:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:radial-gradient(1200px 600px at 50% -10%, rgba(245,197,66,.06), transparent 60%), var(--ink);
+    color:var(--tx); font-family:'Pretendard',-apple-system,system-ui,sans-serif;
+    line-height:1.55; min-height:100vh; font-feature-settings:"tnum" 1;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:24px 20px 64px}
+  .stage{display:none;animation:fade .4s ease both}
+  .stage.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
+  .databadge{font-size:11px;font-weight:700;padding:5px 11px;border-radius:20px;border:1px solid var(--line);color:var(--mut);background:var(--surface);display:inline-flex;align-items:center;gap:6px}
+  .databadge .pip{width:7px;height:7px;border-radius:50%;background:var(--mut2)}
+  .databadge.real{color:var(--mint);border-color:rgba(79,224,176,.3)} .databadge.real .pip{background:var(--mint)}
+  h1{font-size:clamp(30px,6vw,52px);font-weight:900;letter-spacing:-.02em;line-height:1.02}
+  h1 .flag{color:var(--gold)}
+  .lede{margin-top:14px;color:var(--mut);font-size:clamp(15px,2.4vw,18px);max-width:640px}
+  .lede b{color:var(--tx);font-weight:700}
+
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+  .grid{display:grid;grid-template-columns:1.55fr .9fr;gap:18px;margin-top:24px}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+  .assets{display:flex;flex-direction:column;gap:2px}
+  .arow{display:grid;grid-template-columns:132px 1fr 48px;align-items:center;gap:12px;padding:8px 4px;border-bottom:1px solid rgba(40,50,78,.5)}
+  .arow:last-child{border-bottom:none}
+  .aname{font-weight:600;font-size:13.5px;display:flex;align-items:center;gap:8px;min-width:0}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none;display:inline-block}
+  .atag{font-size:10px;color:var(--mut);font-weight:600;display:block}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:6px;background:var(--surface2);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--tx);border:3px solid var(--ink);box-shadow:0 0 0 1px var(--line);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--tx);border:3px solid var(--ink);cursor:pointer}
+  input[type=range]:focus-visible{box-shadow:0 0 0 3px rgba(245,197,66,.4)}
+  .apct{text-align:right;font-weight:800;font-size:14px;font-variant-numeric:tabular-nums;color:var(--mut)}
+  .apct.live{color:var(--tx)}
+  .side h3{font-size:13px;font-weight:700;color:var(--mut);letter-spacing:.04em;margin-bottom:12px;text-transform:uppercase}
+  .allocbar{height:16px;border-radius:8px;overflow:hidden;display:flex;background:var(--surface2);margin-bottom:6px}
+  .allocbar span{height:100%;transition:width .15s ease}
+  .alloctot{font-size:12px;color:var(--mut);text-align:right;margin-bottom:20px}
+  .meter{margin-bottom:20px}
+  .meterlab{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-bottom:6px}
+  .meterbar{height:10px;border-radius:6px;background:linear-gradient(90deg,var(--mint),var(--gold) 55%,var(--red));position:relative}
+  .meterknob{position:absolute;top:50%;width:4px;height:18px;background:var(--tx);border-radius:2px;transform:translate(-50%,-50%);transition:left .2s ease;box-shadow:0 0 0 2px var(--ink)}
+  .meterval{font-size:13px;font-weight:700;margin-top:8px}
+  .presets{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+  .chip{background:var(--surface2);border:1px solid var(--line);color:var(--mut);font-size:12px;font-weight:600;padding:6px 11px;border-radius:20px;cursor:pointer;font-family:inherit}
+  .chip:hover{color:var(--tx);border-color:var(--mut)}
+  .chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .btn{width:100%;background:var(--gold);color:#1A1404;border:none;border-radius:11px;padding:15px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;letter-spacing:-.01em;transition:transform .08s,filter .15s}
+  .btn:hover{filter:brightness(1.06)} .btn:active{transform:translateY(1px)}
+  .btn:disabled{background:var(--surface2);color:var(--mut2);cursor:not-allowed;filter:none}
+  .btn:focus-visible{outline:3px solid rgba(245,197,66,.5);outline-offset:2px}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--tx)}
+  .btn.sm{width:auto;padding:11px 20px;font-size:14px}
+
+  .racehead{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+  .racehead .t{font-size:22px;font-weight:900;letter-spacing:-.01em}
+  .datebadge{font-size:13px;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;background:rgba(245,197,66,.1);padding:5px 12px;border-radius:20px;border:1px solid rgba(245,197,66,.25)}
+  .board{display:grid;grid-template-columns:1.7fr 1fr;gap:16px}
+  @media(max-width:760px){.board{grid-template-columns:1fr}}
+  .canvaswrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px}
+  canvas{width:100%;display:block}
+  .lead{display:flex;flex-direction:column;gap:9px}
+  .lcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:11px;position:relative;overflow:hidden;transition:transform .3s ease}
+  .lcard .rank{font-size:13px;font-weight:800;color:var(--mut);width:18px;font-variant-numeric:tabular-nums}
+  .lcard .who{font-weight:700;font-size:14px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lcard .bal{font-weight:800;font-size:15px;font-variant-numeric:tabular-nums}
+  .lcard .lstripe{position:absolute;left:0;top:0;bottom:0;width:4px}
+  .lcard.you{border-color:var(--gold);background:rgba(245,197,66,.07)}
+  .ctrls{display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap}
+  .spd{display:flex;gap:6px;margin-left:auto}
+  .spd button{background:var(--surface2);border:1px solid var(--line);color:var(--mut);font-family:inherit;font-weight:700;font-size:13px;padding:8px 12px;border-radius:8px;cursor:pointer}
+  .spd button.on{background:var(--gold);color:#1A1404;border-color:var(--gold)}
+  .spd button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+  .rtitle{font-size:26px;font-weight:900;letter-spacing:-.01em;margin-bottom:6px}
+  .rsub{color:var(--mut);margin-bottom:20px;font-size:14px}
+  .rsub b{color:var(--gold)}
+
+  /* stat cards */
+  .statcards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media(max-width:760px){.statcards{grid-template-columns:repeat(2,1fr)}}
+  .scard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:15px;cursor:pointer;position:relative;transition:border-color .15s,transform .15s}
+  .scard:hover{border-color:var(--mut)}
+  .scard.you{border-color:rgba(245,197,66,.4)}
+  .scard.win{border-color:rgba(79,224,176,.45);background:rgba(79,224,176,.05)}
+  .schead{display:flex;align-items:center;gap:7px;font-weight:700;font-size:13.5px;margin-bottom:9px}
+  .srank{margin-left:auto;font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;background:var(--surface2);color:var(--mut)}
+  .srank.r1{background:rgba(79,224,176,.18);color:var(--mint)}
+  .sbal{font-size:20px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .smult{font-size:13px;font-weight:700;margin-left:5px}
+  .shint{font-size:10.5px;color:var(--mut2);margin-top:8px;font-weight:600}
+  .sdet{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);animation:fade .2s ease both}
+  .scard:hover .sdet,.scard.show .sdet{display:block}
+  .scard:hover .shint,.scard.show .shint{display:none}
+  .srow{display:flex;justify-content:space-between;font-size:12.5px;padding:3px 0;font-variant-numeric:tabular-nums}
+  .srow span{color:var(--mut)} .srow b{font-weight:700}
+  .scomp{margin-top:9px}
+  .scomp .lbl{font-size:10.5px;color:var(--mut);margin-bottom:4px}
+  .minibar{height:9px;border-radius:5px;overflow:hidden;display:flex;background:var(--surface2)}
+  .minibar span{height:100%}
+  .pos{color:var(--mint)} .neg{color:var(--red)}
+
+  .sech{font-size:15px;font-weight:800;margin:28px 0 14px;letter-spacing:-.01em}
+  .sech span{color:var(--mint);font-weight:700;font-size:13px}
+  .seccap{font-size:12.5px;color:var(--mut);margin-top:11px;line-height:1.6}
+  .swrow{display:grid;grid-template-columns:108px 56px 1fr 56px;align-items:center;gap:10px;padding:7px 0}
+  @media(max-width:520px){.swrow{grid-template-columns:84px 46px 1fr 46px;gap:6px}}
+  .swwho{font-weight:700;font-size:13px;display:flex;align-items:center;gap:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .swval{font-size:11.5px;font-variant-numeric:tabular-nums;color:var(--mut)}
+  .swval.lo{text-align:right} .swval.hi{text-align:left;font-weight:700;color:var(--tx)}
+  .swtrack{position:relative;height:14px;background:var(--surface2);border-radius:7px}
+  .swbar{position:absolute;top:0;bottom:0;border-radius:7px;opacity:.92}
+  .swpar{position:absolute;top:-3px;bottom:-3px;width:2px;background:rgba(245,197,66,.75);z-index:2;border-radius:1px}
+  .excanv{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px}
+
+  /* optimizer */
+  .optwrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;margin-top:6px}
+  .optintro{font-size:13.5px;color:var(--mut);margin-bottom:16px;line-height:1.6}
+  #optResult{margin-top:18px}
+  .optgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+  @media(max-width:680px){.optgrid{grid-template-columns:1fr}}
+  .optbox{background:var(--surface2);border-radius:12px;padding:15px}
+  .optbox .h{font-size:11px;font-weight:700;color:var(--mut);letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px}
+  .optchips{display:flex;flex-direction:column;gap:6px}
+  .optchip{display:flex;align-items:center;gap:8px;font-size:13.5px;font-variant-numeric:tabular-nums}
+  .optchip .w{margin-left:auto;font-weight:800}
+  .optmetrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .metric{background:var(--ink);border-radius:9px;padding:10px 12px}
+  .metric .ml{font-size:10.5px;color:var(--mut);margin-bottom:2px}
+  .metric .mv{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+  .vs{font-size:13px;color:var(--tx);line-height:1.65;background:rgba(79,224,176,.06);border:1px solid rgba(79,224,176,.2);border-radius:11px;padding:14px;margin-top:6px}
+  .vs b{font-weight:800}
+  .warn{font-size:12px;color:#FFD9A0;background:rgba(255,170,60,.08);border:1px solid rgba(255,170,60,.25);border-radius:11px;padding:13px 15px;margin-top:14px;line-height:1.6}
+  .warn b{color:#FFC062}
+
+  .lesson{background:linear-gradient(135deg,rgba(245,197,66,.1),rgba(79,224,176,.06));border:1px solid rgba(245,197,66,.25);border-radius:var(--r);padding:20px 22px;margin:24px 0}
+  .lesson h4{font-size:15px;font-weight:800;color:var(--gold);margin-bottom:8px}
+  .lesson p{font-size:14px;color:var(--tx);line-height:1.65}
+  .mapcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;margin-bottom:18px}
+  .mapcard .tier{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px}
+  .mapcard h4{font-size:19px;font-weight:900;margin-bottom:4px}
+  .mapcard .desc{color:var(--mut);font-size:14px;margin-bottom:16px}
+  .etfs{display:flex;flex-direction:column;gap:8px}
+  .etf{display:flex;align-items:center;gap:10px;background:var(--surface2);border-radius:10px;padding:11px 14px;font-size:14px}
+  .etf .en{font-weight:700} .etf .ed{color:var(--mut);font-size:12.5px;margin-left:auto;text-align:right}
+  .compliance{font-size:11.5px;color:var(--mut2);line-height:1.65;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:15px 16px;margin-top:18px}
+  .compliance b{color:var(--mut);font-weight:700}
+  .foot{text-align:center;color:var(--mut2);font-size:12px;margin-top:26px}
+  .rbtns{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ SETUP ============ -->
+  <section class="stage on" id="setup">
+    <div class="topbar">
+      <div class="eyebrow">ACE ETF · 분산투자 체험 시뮬레이터</div>
+      <div class="databadge" id="dataBadge"><span class="pip"></span><span id="dataBadgeTxt">데이터 확인 중…</span></div>
+    </div>
+    <h1>1천만 원 <span class="flag">생존 레이싱</span></h1>
+    <p class="lede">알바비로 모은 <b>1천만 원</b>. 실제 5년의 폭락장과 상승장을 통과하며 <b>깨먹지 않고 우상향</b>시키면 승리합니다. 우승은 단순 수익률이 아닌 <b>안정성 점수(수익÷변동성)</b>로 가립니다.</p>
+
+    <div class="grid">
+      <div class="panel">
+        <div class="presets">
+          <button class="chip" data-preset="reset">↺ 리셋</button>
+          <button class="chip" data-preset="allin">🎯 한 종목 몰빵</button>
+          <button class="chip" data-preset="even">🌐 자산 분산</button>
+          <button class="chip" data-preset="defense">🛡️ 방어 위주</button>
+        </div>
+        <div class="assets" id="assets"></div>
+      </div>
+      <div class="side">
+        <h3>내 포트폴리오</h3>
+        <div class="allocbar" id="allocbar"></div>
+        <div class="alloctot" id="alloctot">자산을 배분하세요</div>
+        <div class="meter">
+          <div class="meterlab"><span>안정적</span><span>공격적</span></div>
+          <div class="meterbar"><div class="meterknob" id="knob" style="left:0%"></div></div>
+          <div class="meterval" id="riskval">위험도 —</div>
+        </div>
+        <button class="btn" id="startBtn" disabled>레이스 시작 →</button>
+        <p style="font-size:11.5px;color:var(--mut2);margin-top:12px;line-height:1.5">슬라이더 비중은 자동으로 100%로 환산됩니다. 3명의 봇(몰빵·균형·방어)과 동시에 달립니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RACE ============ -->
+  <section class="stage" id="race">
+    <div class="racehead">
+      <div class="t">🏁 레이스 진행 중</div>
+      <div class="datebadge" id="dateBadge2">출발 준비</div>
+    </div>
+    <div class="board">
+      <div class="canvaswrap"><canvas id="cv"></canvas></div>
+      <div class="lead" id="leaderboard"></div>
+    </div>
+    <div class="ctrls">
+      <button class="btn ghost sm" id="playBtn">⏸ 일시정지</button>
+      <button class="btn ghost sm" id="resetBtn">↺ 처음으로</button>
+      <div class="spd">
+        <button data-spd="1">1x</button>
+        <button data-spd="2" class="on">2x</button>
+        <button data-spd="4">4x</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section class="stage" id="results">
+    <div class="rtitle">🏆 최종 결과</div>
+    <div class="rsub">카드에 <b>마우스를 올리거나 탭</b>하면 최고점·최저점과 상세 스탯이 펼쳐집니다. 순위는 <b>안정성 점수(수익÷변동성)</b> 기준이에요.</div>
+    <div class="statcards" id="statcards"></div>
+
+    <div class="swing">
+      <h4 class="sech">💓 얼마나 흔들렸나 — 최저점 ↔ 최고점</h4>
+      <div id="swingBars"></div>
+      <p class="seccap">막대가 길수록 계좌가 크게 출렁였다는 뜻이에요. 노란 선이 본전(1,000만)이고, 분산 포트폴리오일수록 막대가 짧습니다.</p>
+    </div>
+
+    <div class="exemplar">
+      <h4 class="sech">🛡️ 분산을 잘하면 이렇게 — <span id="exName"></span></h4>
+      <div class="excanv"><canvas id="exCv"></canvas></div>
+      <p class="seccap">위는 자산 곡선, 아래는 낙폭(고점 대비 하락폭). 잘 분산된 포트폴리오는 폭락장을 지나도 완만히 우상향하고 낙폭도 얕게 관리됩니다.</p>
+    </div>
+
+    <h4 class="sech">🔍 분산의 힘 — 과거 5년 최적 분산 포트폴리오</h4>
+    <div class="optwrap">
+      <p class="optintro">과거 데이터에서 <b style="color:var(--tx)">최대 5종목 · 비중 5% 단위 · 한 종목 최대 40%</b>의 현실적 조건으로 가능한 모든 분산 조합 중, 안정성 점수가 가장 높았던 포트폴리오를 찾아 단일 종목 몰빵과 비교합니다. 분산이 위험을 얼마나 줄이는지 직접 확인해 보세요.</p>
+      <button class="btn sm" id="optBtn">⚡ 최적 분산 포트폴리오 탐색</button>
+      <div id="optResult"></div>
+    </div>
+
+    <div class="lesson">
+      <h4 id="lessonTitle">📌 오늘의 교훈</h4>
+      <p id="lessonBody"></p>
+    </div>
+
+    <div class="mapcard" id="mapcard">
+      <div class="tier" id="mapTier"></div>
+      <h4 id="mapTitle"></h4>
+      <div class="desc" id="mapDesc"></div>
+      <div class="etfs" id="mapEtfs"></div>
+    </div>
+
+    <div class="compliance">
+      <b>※ 투자 유의사항</b> · 본 시뮬레이션은 <span id="srcNote">실제 과거 데이터 또는 근사 데이터</span>를 기반으로 한 <b>교육용 자료</b>입니다. <b>과거의 성과는 미래의 수익을 보장하지 않습니다.</b> 특히 '최적 분산 포트폴리오'는 과거 데이터에 사후적으로 맞춘 결과로 <b>과최적화(overfitting)의 위험</b>이 있으며, 정답이 아니라 분산 효과를 보여주기 위한 예시입니다. 특정 종목·상품에 대한 투자 권유가 아니며, 투자의 최종 판단과 책임은 투자자 본인에게 있습니다. 제시된 ACE ETF는 성향 이해를 돕기 위한 예시이니 실제 상품·보수는 운용사 공시를 확인하세요.
+    </div>
+
+    <div class="rbtns"><button class="btn sm" id="againBtn">↺ 다시 도전</button></div>
+    <div class="foot">ACE ETF 대학생 서포터즈 부스 체험판 · 분산투자의 힘을 60초에 체감하기</div>
+  </section>
+
+</div>
+
+<script>
+"use strict";
+/* =================== 자산 정의 =================== */
+// [이름, 연드리프트, 시장베타, 고유변동성, 카테고리, 위험가중치, 색]  (드리프트·베타는 근사 데이터 생성용)
+const ASSETS = [
+  ["테슬라",        0.18, 1.6, 0.40, "단일종목·공격",   2, "#FF4B57"],
+  ["엔비디아",      0.42, 1.7, 0.38, "단일종목·공격",   2, "#76B900"],
+  ["TQQQ 나스닥3배", 0.20, 3.0, 0.15, "레버리지·초공격", 3, "#FF8C2B"],
+  ["SOXL 반도체3배", 0.15, 3.2, 0.20, "레버리지·초공격", 3, "#FF4FB0"],
+  ["QQQ 나스닥100",  0.16, 1.1, 0.06, "지수·성장",       1, "#5B8DEF"],
+  ["S&P500",       0.13, 1.0, 0.04, "지수·미국대표",   1, "#3F6FE0"],
+  ["SCHD 미국배당",  0.10, 0.75,0.05, "배당·방어적성장", 1, "#C9A227"],
+  ["삼성전자",      0.06, 0.9, 0.18, "단일종목·성장",   1, "#2BD4D9"],
+  ["KODEX 레버리지", 0.04, 1.8, 0.15, "레버리지2배·공격",2, "#B98CFF"],
+  ["금",           0.09,-0.15,0.12, "안전자산·방어",   0, "#F5C542"],
+  ["미국장기채",    0.005,-0.28,0.13, "장기채·방어",     0, "#4FE0B0"],
+  ["미국단기채",    0.03,-0.05,0.025,"단기채·현금성",   0, "#7E8AA8"],
+  ["비트코인",      0.33, 1.6, 0.55, "가상자산·초공격", 3, "#F7931A"],
+];
+const NAMES = ASSETS.map(a=>a[0]);
+const START_CAP = 10000000;
+
+/* =================== 근사 데이터 생성 (실데이터 없을 때) =================== */
+const N_SYNTH = 1260;
+const CRASH_ZONES_SYNTH = [{s:50,e:80,label:"급락 충격"},{s:520,e:740,label:"긴축 베어장"}];
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function gauss(rng){let u=0,v=0;while(u===0)u=rng();while(v===0)v=rng();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function genSynthetic(){
+  const rng=mulberry32(12345), mkt=new Array(N_SYNTH), md=0.115/252, mv=0.14/Math.sqrt(252);
+  for(let t=0;t<N_SYNTH;t++){let ev=0,vm=1;if(t>=50&&t<80){ev=-0.018;vm=2.2;}if(t>=520&&t<740){ev=-0.0042;vm=1.8;}mkt[t]=md+ev+mv*vm*gauss(rng);}
+  const P={};
+  for(const a of ASSETS){
+    const [nm,mu,beta,idio]=a; const arng=mulberry32(nm.length*7919+Math.floor(mu*1000)+1);
+    let p=100; const arr=[p];
+    for(let t=0;t<N_SYNTH;t++){let bd=(nm==="미국장기채"&&t>=520&&t<740)?-0.0009:0;const r=mu/252+beta*mkt[t]+(idio/Math.sqrt(252))*gauss(arng)+bd;p=p*(1+r);arr.push(p);}
+    P[nm]=arr;
+  }
+  return P;
+}
+
+/* =================== 데이터 상태 =================== */
+let PRICES = genSynthetic();   // 즉시 사용 가능한 기본값(근사)
+let SOURCE = "demo";
+let CRASH_ZONES = CRASH_ZONES_SYNTH.slice();
+let MU=[], SIGMA=[], RET={};
+
+function buildStats(){
+  const n=PRICES[NAMES[0]].length;
+  RET={}; NAMES.forEach(nm=>{const p=PRICES[nm];const r=new Array(p.length-1);for(let t=1;t<p.length;t++)r[t-1]=p[t]/p[t-1]-1;RET[nm]=r;});
+  const T=RET[NAMES[0]].length;
+  const means=NAMES.map(nm=>{const r=RET[nm];let s=0;for(let i=0;i<T;i++)s+=r[i];return s/T;});
+  MU=means.map(m=>m*252);
+  SIGMA=NAMES.map((_,i)=>NAMES.map((_,j)=>{const ri=RET[NAMES[i]],rj=RET[NAMES[j]];let s=0;for(let t=0;t<T;t++)s+=(ri[t]-means[i])*(rj[t]-means[j]);return s/T*252;}));
+}
+
+function simulate(weights){
+  const names=Object.keys(weights).filter(n=>weights[n]>1e-9);
+  const M=PRICES[NAMES[0]].length;
+  const bal=[START_CAP], rets=[];
+  for(let t=1;t<M;t++){
+    let r=0; for(const n of names) r+=weights[n]*(PRICES[n][t]/PRICES[n][t-1]-1);
+    rets.push(r); bal.push(bal[t-1]*(1+r));
+  }
+  const mean=rets.reduce((x,y)=>x+y,0)/rets.length;
+  const sd=Math.sqrt(rets.reduce((x,y)=>x+(y-mean)**2,0)/rets.length);
+  const annRet=mean*252, annVol=sd*Math.sqrt(252);
+  let peak=bal[0], mdd=0, trough=bal[0];
+  for(const b of bal){if(b>peak)peak=b;if(b<trough)trough=b;const dd=(b-peak)/peak;if(dd<mdd)mdd=dd;}
+  return {bal,final:bal[bal.length-1],mult:bal[bal.length-1]/START_CAP,annRet,annVol,mdd,peak,trough,stability:annVol>0?annRet/annVol:0};
+}
+
+const BOTS=[
+  {name:"몰빵봇 🔥", color:"#FF4B57", w:{"TQQQ 나스닥3배":1}},
+  {name:"균형봇 ⚖️", color:"#5B8DEF", w:{"S&P500":0.4,"SCHD 미국배당":0.2,"금":0.2,"미국장기채":0.15,"비트코인":0.05}},
+  {name:"방어봇 🛡️", color:"#4FE0B0", w:{"미국단기채":0.3,"금":0.3,"미국장기채":0.2,"SCHD 미국배당":0.2}},
+];
+
+/* =================== 데이터 로드 =================== */
+buildStats();
+function setBadge(){
+  const b=document.getElementById("dataBadge"), txt=document.getElementById("dataBadgeTxt");
+  const M=PRICES[NAMES[0]].length;
+  if(SOURCE==="real"){ b.classList.add("real"); txt.textContent="실제 5년 데이터 ("+M+"일)"; document.getElementById("srcNote").textContent="실제 과거 5년 데이터"; }
+  else { b.classList.remove("real"); txt.textContent="데모 데이터 (근사 시뮬레이션)"; document.getElementById("srcNote").textContent="근사 시뮬레이션 데이터"; }
+}
+(function loadReal(){
+  fetch("prices.json",{cache:"no-store"}).then(r=>r.ok?r.json():Promise.reject()).then(data=>{
+    // 검증: 모든 자산이 동일 길이로 존재
+    const len=data[NAMES[0]] && data[NAMES[0]].length;
+    if(!len) throw 0;
+    for(const nm of NAMES){ if(!Array.isArray(data[nm])||data[nm].length!==len) throw 0; }
+    PRICES=data; SOURCE="real"; CRASH_ZONES=[]; buildStats(); setBadge();
+  }).catch(()=>{ SOURCE="demo"; setBadge(); });
+})();
+
+/* =================== UI: 배분 =================== */
+const raw=ASSETS.map(()=>0);
+const $=s=>document.querySelector(s);
+const fmtWon=v=>{ if(v>=100000000) return (v/100000000).toFixed(2)+"억"; return Math.round(v/10000).toLocaleString()+"만"; };
+
+const assetsEl=$("#assets");
+ASSETS.forEach((a,i)=>{
+  const row=document.createElement("div"); row.className="arow";
+  row.innerHTML=`<div class="aname"><span class="dot" style="background:${a[6]}"></span>
+    <span style="min-width:0"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a[0]}</span>
+    <span class="atag">${a[4]}</span></span></div>
+    <input type="range" min="0" max="100" value="0" aria-label="${a[0]} 비중" data-i="${i}">
+    <div class="apct" data-pct="${i}">0%</div>`;
+  assetsEl.appendChild(row);
+});
+function recompute(){
+  const sum=raw.reduce((x,y)=>x+y,0);
+  const bar=$("#allocbar"); bar.innerHTML=""; let riskNum=0;
+  ASSETS.forEach((a,i)=>{
+    const pct=sum>0?raw[i]/sum*100:0;
+    const pe=document.querySelector(`[data-pct="${i}"]`); pe.textContent=Math.round(pct)+"%"; pe.classList.toggle("live",pct>0);
+    if(pct>0){const seg=document.createElement("span");seg.style.width=pct+"%";seg.style.background=a[6];bar.appendChild(seg);}
+    riskNum+=(pct/100)*a[5];
+  });
+  $("#alloctot").textContent=sum>0?"합계 100% (자동 환산)":"자산을 배분하세요";
+  $("#knob").style.left=Math.min(100,riskNum/3*100)+"%";
+  let label="—";
+  if(sum>0){ if(riskNum<0.7)label="🛡️ 방어형 — 안정 우선"; else if(riskNum<1.6)label="⚖️ 균형형 — 성장과 방어 혼합"; else if(riskNum<2.4)label="⚡ 공격형 — 성장 집중"; else label="🔥 초공격형 — 변동성 매우 큼"; }
+  $("#riskval").textContent=sum>0?label:"위험도 —";
+  $("#startBtn").disabled=!(sum>0);
+}
+document.querySelectorAll('input[type=range]').forEach(inp=>inp.addEventListener('input',e=>{raw[+e.target.dataset.i]=+e.target.value;recompute();}));
+document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{
+  const p=b.dataset.preset; raw.fill(0);
+  if(p==="allin"){raw[2]=100;}
+  else if(p==="even"){raw[5]=25;raw[4]=15;raw[6]=15;raw[7]=10;raw[9]=15;raw[10]=10;raw[11]=5;raw[12]=5;}
+  else if(p==="defense"){raw[11]=30;raw[9]=30;raw[10]=20;raw[6]=20;}
+  document.querySelectorAll('input[type=range]').forEach((inp,i)=>inp.value=raw[i]); recompute();
+}));
+
+/* =================== RACE =================== */
+let racers=[], anim=null, day=0, playing=false, speed=2, NDAYS=0;
+const cv=$("#cv"), ctx=cv.getContext("2d");
+const PAD={l:10,r:96,t:14,b:26};
+const Y_FLOOR=3000000, Y_CAP=60000000;
+
+function startRace(){
+  const sum=raw.reduce((x,y)=>x+y,0);
+  const w={}; ASSETS.forEach((a,i)=>{if(raw[i]>0)w[a[0]]=raw[i]/sum;});
+  NDAYS=PRICES[NAMES[0]].length-1;
+  const me=simulate(w);
+  racers=[{name:"나 ⭐",color:"#F5C542",you:true,weights:w,...me}];
+  BOTS.forEach(b=>racers.push({name:b.name,color:b.color,you:false,weights:b.w,...simulate(b.w)}));
+  $("#setup").classList.remove("on"); $("#results").classList.remove("on"); $("#race").classList.add("on");
+  window.scrollTo(0,0); sizeCanvas(); day=0; speed=2; setSpeedUI(2);
+  if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){ day=NDAYS; draw(); buildLeader(); updateLeader(); finish(); return; }
+  playing=true; $("#playBtn").textContent="⏸ 일시정지"; buildLeader(); cancelAnimationFrame(anim); loop();
+}
+function sizeCanvas(){
+  const w=cv.parentElement.clientWidth-24, h=Math.max(280,Math.min(440,Math.round(w*0.62))), dpr=window.devicePixelRatio||1;
+  cv.width=w*dpr; cv.height=h*dpr; cv.style.height=h+"px"; ctx.setTransform(dpr,0,0,dpr,0,0); cv._w=w; cv._h=h;
+}
+window.addEventListener('resize',()=>{ if($("#race").classList.contains("on")){sizeCanvas();draw();} if($("#results").classList.contains("on")&&racers.length)renderExemplar(); });
+function yLog(bal){const lo=Math.log(Y_FLOOR),hi=Math.log(Y_CAP);let f=(Math.log(Math.max(bal,1))-lo)/(hi-lo);f=Math.max(0,Math.min(1,f));return PAD.t+(1-f)*(cv._h-PAD.t-PAD.b);}
+function xAt(d){return PAD.l+d/NDAYS*(cv._w-PAD.l-PAD.r);}
+function draw(){
+  const w=cv._w,h=cv._h; ctx.clearRect(0,0,w,h);
+  CRASH_ZONES.forEach(z=>{const x1=xAt(z.s),x2=xAt(z.e);ctx.fillStyle="rgba(255,75,87,.07)";ctx.fillRect(x1,PAD.t,x2-x1,h-PAD.t-PAD.b);if(day>=z.s){ctx.fillStyle="rgba(255,84,112,.7)";ctx.font="600 10px Pretendard";ctx.textAlign="left";ctx.fillText(z.label,x1+5,PAD.t+13);}});
+  [[5000000,"500만"],[10000000,"1,000만"],[20000000,"2,000만"],[40000000,"4,000만"]].forEach(([v,lab])=>{
+    const y=yLog(v),main=(v===10000000);
+    ctx.strokeStyle=main?"rgba(245,197,66,.35)":"rgba(40,50,78,.7)";ctx.lineWidth=main?1.2:1;ctx.setLineDash(main?[]:[3,4]);
+    ctx.beginPath();ctx.moveTo(PAD.l,y);ctx.lineTo(w-PAD.r,y);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=main?"#F5C542":"rgba(136,147,172,.65)";ctx.font=(main?"700 ":"500 ")+"10px Pretendard";ctx.textAlign="right";
+    ctx.fillText(main?lab+" (본전)":lab,w-PAD.r-5,y-3);
+  });
+  racers.forEach(r=>{
+    ctx.strokeStyle=r.color;ctx.lineWidth=r.you?3:2;ctx.globalAlpha=r.you?1:0.92;ctx.beginPath();
+    const step=Math.max(1,Math.floor(NDAYS/600));
+    for(let d=0;d<=day;d+=step){const x=xAt(d),y=yLog(r.bal[d]);d===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
+    const lx=xAt(day),ly=yLog(r.bal[day]);ctx.lineTo(lx,ly);ctx.stroke();ctx.globalAlpha=1;
+    ctx.fillStyle=r.color;ctx.beginPath();ctx.arc(lx,ly,r.you?4.5:3.5,0,7);ctx.fill();
+    ctx.font=(r.you?"800 ":"700 ")+"11px Pretendard";ctx.textAlign="left";ctx.fillText(fmtWon(r.bal[day]),Math.min(lx+7,w-PAD.r+2),ly+4);
+  });
+}
+function buildLeader(){
+  const lb=$("#leaderboard");lb.innerHTML="";
+  racers.forEach((r,i)=>{const c=document.createElement("div");c.className="lcard"+(r.you?" you":"");c.id="lc"+i;
+    c.innerHTML=`<span class="lstripe" style="background:${r.color}"></span><span class="rank">–</span><span class="who">${r.name}</span><span class="bal" style="color:${r.color}">${fmtWon(START_CAP)}</span>`;lb.appendChild(c);});
+}
+function updateLeader(){
+  racers.map((r,i)=>({i,b:r.bal[day]})).sort((a,b)=>b.b-a.b).forEach((o,rank)=>{
+    const c=$("#lc"+o.i);c.querySelector(".rank").textContent=(rank+1);c.querySelector(".bal").textContent=fmtWon(racers[o.i].bal[day]);c.style.order=rank;});
+}
+function dateLabel(d){const td=d/NDAYS*5*365,y=2020+Math.floor(td/365),m=Math.floor((td%365)/30.4)+1,yr=Math.floor(d/NDAYS*5)+1;return `${y}년 ${m}월 · ${yr}년차`;}
+function loop(){ if(!playing)return; day=Math.min(NDAYS,day+speed*3); draw(); updateLeader(); $("#dateBadge2").textContent=dateLabel(day); if(day>=NDAYS){playing=false;setTimeout(finish,500);return;} anim=requestAnimationFrame(loop); }
+$("#startBtn").addEventListener('click',startRace);
+$("#playBtn").addEventListener('click',()=>{if(day>=NDAYS)return;playing=!playing;$("#playBtn").textContent=playing?"⏸ 일시정지":"▶ 재생";if(playing)loop();});
+$("#resetBtn").addEventListener('click',backToSetup);
+$("#againBtn").addEventListener('click',backToSetup);
+function backToSetup(){cancelAnimationFrame(anim);playing=false;$("#race").classList.remove("on");$("#results").classList.remove("on");$("#setup").classList.add("on");$("#optResult").innerHTML="";window.scrollTo(0,0);}
+document.querySelectorAll('.spd button').forEach(b=>b.addEventListener('click',()=>{speed=+b.dataset.spd;setSpeedUI(speed);}));
+function setSpeedUI(s){document.querySelectorAll('.spd button').forEach(b=>b.classList.toggle("on",+b.dataset.spd===s));}
+
+/* =================== RESULTS =================== */
+function compBar(weights){
+  let h='<div class="minibar">';
+  for(let i=0;i<ASSETS.length;i++){const nm=ASSETS[i][0];if(weights[nm]>0)h+=`<span style="width:${weights[nm]*100}%;background:${ASSETS[i][6]}"></span>`;}
+  return h+'</div>';
+}
+function compText(weights){
+  return Object.keys(weights).filter(n=>weights[n]>0).sort((a,b)=>weights[b]-weights[a])
+    .map(n=>`${n.replace(/ .*/,'')} ${Math.round(weights[n]*100)}%`).join(' · ');
+}
+function finish(){
+  $("#race").classList.remove("on"); $("#results").classList.add("on"); window.scrollTo(0,0);
+  const ranked=[...racers].sort((a,b)=>b.stability-a.stability);
+  const rankOf=r=>ranked.indexOf(r)+1;
+  // stat cards
+  const sc=$("#statcards"); sc.innerHTML="";
+  ranked.forEach((r,i)=>{
+    const crash=r.mdd<-0.6;
+    const card=document.createElement("div");
+    card.className="scard"+(r.you?" you":"")+(i===0?" win":"");
+    card.innerHTML=`
+      <div class="schead"><span class="dot" style="background:${r.color}"></span>${r.name}
+        <span class="srank ${i===0?'r1':''}">${i+1}위</span></div>
+      <div class="sbal">${fmtWon(r.final)}<span class="smult ${r.mult>=1?'pos':'neg'}">${r.mult.toFixed(2)}x</span></div>
+      <div class="shint">⌖ 올려서 스탯 보기</div>
+      <div class="sdet">
+        <div class="srow"><span>최고점</span><b>${fmtWon(r.peak)}</b></div>
+        <div class="srow"><span>최저점</span><b class="${r.trough<START_CAP?'neg':''}">${fmtWon(r.trough)}</b></div>
+        <div class="srow"><span>최대낙폭</span><b class="neg">${(r.mdd*100).toFixed(0)}%</b></div>
+        <div class="srow"><span>연변동성</span><b>${(r.annVol*100).toFixed(0)}%</b></div>
+        <div class="srow"><span>안정성 점수</span><b class="${r.stability>0?'pos':'neg'}">${r.stability.toFixed(2)}</b></div>
+        <div class="scomp"><div class="lbl">구성 ${crash?'· ⚠️ 붕괴':''}</div>${compBar(r.weights)}
+          <div style="font-size:10.5px;color:var(--mut);margin-top:5px">${compText(r.weights)}</div></div>
+      </div>`;
+    card.addEventListener('click',()=>card.classList.toggle('show'));
+    sc.appendChild(card);
+  });
+  // lesson
+  const me=racers[0], myRank=ranked.findIndex(r=>r.you)+1;
+  const molbang=racers.find(r=>r.name.includes("몰빵")), bang=racers.find(r=>r.name.includes("방어"));
+  let mPeakRank=99;
+  for(let d=0;d<=NDAYS;d+=5){const ord=racers.map((r,i)=>({i,b:r.bal[d]})).sort((a,b)=>b.b-a.b);const mr=ord.findIndex(o=>racers[o.i].name.includes("몰빵"));if(mr<mPeakRank)mPeakRank=mr;}
+  let body=`몰빵봇(TQQQ 100%)은 상승장에서 한때 <b>${mPeakRank+1}위</b>까지 치고 올라갔지만, 폭락장에서 <b style="color:#FF4B57">${(molbang.mdd*100).toFixed(0)}%</b> 낙폭으로 붕괴했어요. `;
+  body+=`반면 금·채권을 섞은 방어봇은 최대낙폭 <b style="color:#4FE0B0">${(bang.mdd*100).toFixed(0)}%</b>로 끝까지 살아남아 안정성 1위였습니다. `;
+  body+=myRank===1?`당신의 포트폴리오는 <b style="color:#F5C542">안정성 ${myRank}위</b> — 흔들림을 잘 관리했어요! `:`당신의 포트폴리오는 안정성 ${myRank}위(낙폭 ${(me.mdd*100).toFixed(0)}%)였어요. `;
+  body+=`수익률을 좇기보다 <b>덜 흔들리며 살아남는 것</b>, 그게 장기투자의 핵심입니다.`;
+  $("#lessonBody").innerHTML=body;
+  $("#lessonTitle").textContent=myRank===1?"🎉 분산의 승리!":"📌 오늘의 교훈: 살아남는 자가 이긴다";
+  renderSwing(); renderExemplar();
+  // ACE mapping
+  const sum=raw.reduce((x,y)=>x+y,0); let riskNum=0; ASSETS.forEach((a,i)=>{riskNum+=(raw[i]/sum)*a[5];}); mapACE(riskNum);
+  $("#optResult").innerHTML="";
+}
+
+function renderSwing(){
+  const box=$("#swingBars");box.innerHTML="";
+  const lo=Math.log(Y_FLOOR),hi=Math.log(Y_CAP);
+  const pct=v=>Math.max(0,Math.min(100,(Math.log(Math.max(v,1))-lo)/(hi-lo)*100));
+  const parPct=pct(START_CAP);
+  [...racers].sort((a,b)=>(b.peak/b.trough)-(a.peak/a.trough)).forEach(r=>{
+    const l=pct(r.trough),wd=Math.max(1.5,pct(r.peak)-l);
+    const row=document.createElement("div");row.className="swrow";
+    row.innerHTML=`<div class="swwho"><span class="dot" style="background:${r.color}"></span>${r.name}</div>
+      <div class="swval lo">${fmtWon(r.trough)}</div>
+      <div class="swtrack"><div class="swpar" style="left:${parPct}%"></div><div class="swbar" style="left:${l}%;width:${wd}%;background:${r.color}"></div></div>
+      <div class="swval hi">${fmtWon(r.peak)}</div>`;
+    box.appendChild(row);
+  });
+}
+
+function drawCurveDD(canvas,bal,color){
+  const x=canvas.getContext("2d"), w=canvas.parentElement.clientWidth-24, h=Math.max(210,Math.min(290,Math.round(w*0.46))), dpr=window.devicePixelRatio||1;
+  canvas.width=w*dpr;canvas.height=h*dpr;canvas.style.height=h+"px";x.setTransform(dpr,0,0,dpr,0,0);
+  const n=bal.length,PADX=10,PADR=72,curveH=h*0.60,ddTop=h*0.68,ddH=h*0.28;
+  let mn=Math.min(...bal),mx=Math.max(...bal);const pv=(mx-mn)*0.14||mx*0.1;mn-=pv;mx+=pv;
+  const xA=i=>PADX+i/(n-1)*(w-PADX-PADR), yC=v=>8+(1-(v-mn)/(mx-mn))*(curveH-8);
+  x.clearRect(0,0,w,h);
+  CRASH_ZONES.forEach(z=>{if(z.s<n){x.fillStyle="rgba(255,75,87,.06)";x.fillRect(xA(z.s),0,xA(Math.min(z.e,n-1))-xA(z.s),curveH);}});
+  const yPar=yC(START_CAP);x.strokeStyle="rgba(245,197,66,.35)";x.setLineDash([]);x.lineWidth=1.2;x.beginPath();x.moveTo(PADX,yPar);x.lineTo(w-PADR,yPar);x.stroke();
+  x.fillStyle="#F5C542";x.font="700 10px Pretendard";x.textAlign="right";x.fillText("1,000만(본전)",w-PADR-4,yPar-3);
+  x.beginPath();x.moveTo(xA(0),yC(bal[0]));for(let i=1;i<n;i++)x.lineTo(xA(i),yC(bal[i]));x.strokeStyle=color;x.lineWidth=2.5;x.stroke();
+  x.lineTo(xA(n-1),curveH);x.lineTo(xA(0),curveH);x.closePath();const g=x.createLinearGradient(0,0,0,curveH);g.addColorStop(0,color+"33");g.addColorStop(1,color+"00");x.fillStyle=g;x.fill();
+  x.fillStyle=color;x.font="800 11px Pretendard";x.textAlign="left";x.fillText(fmtWon(bal[n-1]),Math.min(xA(n-1)+6,w-PADR+2),yC(bal[n-1])+4);
+  let peak=bal[0];const dd=bal.map(b=>{if(b>peak)peak=b;return b/peak-1;});const mddv=Math.min(...dd)||-0.01;const yD=v=>ddTop+(v/mddv)*ddH;
+  x.fillStyle="rgba(136,147,172,.55)";x.font="600 10px Pretendard";x.textAlign="left";x.fillText("낙폭(고점 대비)",PADX,ddTop-5);
+  x.beginPath();x.moveTo(xA(0),ddTop);for(let i=0;i<n;i++)x.lineTo(xA(i),yD(dd[i]));x.lineTo(xA(n-1),ddTop);x.closePath();x.fillStyle="rgba(255,75,87,.18)";x.fill();
+  x.strokeStyle="rgba(255,75,87,.65)";x.lineWidth=1;x.beginPath();for(let i=0;i<n;i++){const yy=yD(dd[i]);i===0?x.moveTo(xA(i),yy):x.lineTo(xA(i),yy);}x.stroke();
+  x.fillStyle="#FF4B57";x.font="700 10px Pretendard";x.textAlign="right";x.fillText("최대 "+(mddv*100).toFixed(0)+"%",w-PADR-4,ddTop+ddH+2);
+}
+function renderExemplar(){
+  const best=[...racers].sort((a,b)=>b.stability-a.stability)[0];
+  $("#exName").textContent=best.name+" · 안정성 "+best.stability.toFixed(2)+" / 최대낙폭 "+(best.mdd*100).toFixed(0)+"%";
+  drawCurveDD($("#exCv"),best.bal,best.color);
+}
+
+/* =================== 최적 분산 포트폴리오 탐색 =================== */
+function bestSingleAsset(){
+  let bi=-1,bs=-1e9;
+  for(let i=0;i<NAMES.length;i++){const s=MU[i]/Math.sqrt(Math.max(SIGMA[i][i],1e-12));if(s>bs){bs=s;bi=i;}}
+  return {i:bi,stab:bs};
+}
+function findBestDiversified(){
+  const K=NAMES.length, UNITS=20; // 5% 단위 → 20 units
+  const MINA=3, MAXA=5;
+  let best={stab:-1e9,idx:null,units:null};
+  const idxS=[], wS=[];
+  function evalP(){
+    let num=0; for(let a=0;a<idxS.length;a++) num+=(wS[a]/UNITS)*MU[idxS[a]];
+    let varr=0; for(let a=0;a<idxS.length;a++){const wa=wS[a]/UNITS,ia=idxS[a];for(let b=0;b<idxS.length;b++)varr+=wa*(wS[b]/UNITS)*SIGMA[ia][idxS[b]];}
+    const vol=Math.sqrt(Math.max(varr,1e-12)), stab=num/vol;
+    if(stab>best.stab) best={stab,idx:idxS.slice(),units:wS.slice()};
+  }
+  function rec(i,rem,slots){
+    if(rem===0){ if(idxS.length>=MINA) evalP(); return; }
+    if(i>=K||slots===0) return;
+    rec(i+1,rem,slots); // skip i
+    const cap=Math.min(rem,8); // 자산별 최대 40% — 현실적 분산(쏠림 방지)
+    for(let u=1;u<=cap;u++){ idxS.push(i); wS.push(u); rec(i+1,rem-u,slots-1); idxS.pop(); wS.pop(); }
+  }
+  rec(0,UNITS,MAXA);
+  return best;
+}
+$("#optBtn").addEventListener('click',()=>{
+  const btn=$("#optBtn"); btn.disabled=true; btn.textContent="⏳ 모든 분산 조합 탐색 중…";
+  setTimeout(()=>{
+    const div=findBestDiversified(), single=bestSingleAsset();
+    // 가중치 객체
+    const w={}; div.idx.forEach((ix,a)=>{w[NAMES[ix]]=div.units[a]/20;});
+    const divSim=simulate(w);
+    const sw={}; sw[NAMES[single.i]]=1; const singleSim=simulate(sw);
+    const tqqq=simulate({"TQQQ 나스닥3배":1});
+    // 렌더
+    const chips=div.idx.map((ix,a)=>`<div class="optchip"><span class="dot" style="background:${ASSETS[ix][6]}"></span>${NAMES[ix]}<span class="w">${div.units[a]*5}%</span></div>`).join("");
+    $("#optResult").innerHTML=`
+      <div class="optgrid">
+        <div class="optbox"><div class="h">🛡️ 최적 분산 포트폴리오 (${div.idx.length}종목)</div>
+          <div class="optchips">${chips}</div>
+          <div style="margin-top:12px">${compBar(w)}</div>
+        </div>
+        <div class="optbox"><div class="h">📊 성과 지표</div>
+          <div class="optmetrics">
+            <div class="metric"><div class="ml">최종 배수</div><div class="mv ${divSim.mult>=1?'pos':'neg'}">${divSim.mult.toFixed(2)}x</div></div>
+            <div class="metric"><div class="ml">최대 낙폭</div><div class="mv neg">${(divSim.mdd*100).toFixed(0)}%</div></div>
+            <div class="metric"><div class="ml">연 변동성</div><div class="mv">${(divSim.annVol*100).toFixed(0)}%</div></div>
+            <div class="metric"><div class="ml">안정성 점수</div><div class="mv pos">${divSim.stability.toFixed(2)}</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="excanv"><canvas id="optCv"></canvas></div>
+      <div class="vs">📈 <b>분산 vs 몰빵</b> · 가장 안정적이었던 단일 종목 <b>${NAMES[single.i].replace(/ .*/,'')}</b>는 안정성 ${singleSim.stability.toFixed(2)} / 낙폭 ${(singleSim.mdd*100).toFixed(0)}%, 인기 레버리지 <b>TQQQ 몰빵</b>은 안정성 ${tqqq.stability.toFixed(2)} / 낙폭 ${(tqqq.mdd*100).toFixed(0)}%였습니다. 반면 위 <b>분산 포트폴리오는 안정성 ${divSim.stability.toFixed(2)}에 낙폭은 단 ${(divSim.mdd*100).toFixed(0)}%</b> — 여러 자산을 섞는 것만으로 '덜 흔들리며 버티는' 힘이 생깁니다.</div>
+      <div class="warn">⚠️ <b>과최적화 주의</b> · 이 결과는 <b>이미 지나간 과거 데이터에 가장 잘 맞는 조합</b>을 사후에 찾은 것입니다. 과거가 미래를 보장하지 않으며, 같은 비중이 앞으로도 최적이라는 뜻은 결코 아닙니다. 이건 '정답'이 아니라, <b>분산이 위험을 줄인다는 원리</b>를 보여주기 위한 예시일 뿐이에요. 실제 투자는 특정 과거 답을 베끼는 게 아니라, 꾸준히 분산해 시간에 맡기는 것입니다.</div>`;
+    drawCurveDD($("#optCv"),divSim.bal,"#4FE0B0");
+    btn.textContent="✅ 탐색 완료 (다시 탐색)"; btn.disabled=false;
+  },60);
+});
+
+/* =================== ACE 매핑 =================== */
+function mapACE(riskNum){
+  let tier,color,title,desc,etfs;
+  if(riskNum<0.7){tier="방어형 매칭";color="#4FE0B0";title="🛡️ 안정 중심 — 지키며 모으는 타입";desc="변동성을 낮춰 흔들림 없이 모으는 성향이에요. 금·채권 등 방어자산 비중이 높은 상품이 가깝습니다.";etfs=[["ACE KRX금현물","실물 금 기반 안전자산"],["ACE 미국30년국채액티브","장기 국채 · 방어"],["ACE 미국S&P500","핵심 성장 코어 일부"]];}
+  else if(riskNum<1.6){tier="균형형 매칭";color="#5B8DEF";title="⚖️ 균형 — 성장과 방어를 함께";desc="성장의 과실은 누리되 하락장도 대비하는 성향이에요. 핵심 지수 + 방어자산 조합이 가깝습니다.";etfs=[["ACE 미국S&P500","미국 대표지수 코어"],["ACE 미국나스닥100","성장주 비중"],["ACE 미국30년국채액티브","변동성 완충"]];}
+  else if(riskNum<2.4){tier="공격형 매칭";color="#FF8C2B";title="⚡ 공격 — 성장에 집중하는 타입";desc="장기 성장에 무게를 싣는 성향이에요. 다만 단일 종목 몰빵보다 '지수'로 분산하면 변동성을 크게 낮출 수 있어요.";etfs=[["ACE 미국나스닥100","나스닥 성장주 분산"],["ACE 미국빅테크TOP7 Plus","빅테크 집중"],["ACE 미국S&P500","변동성 분산 코어"]];}
+  else{tier="초공격형 — 주의";color="#FF4B57";title="🔥 초공격 — 변동성이 매우 큰 타입";desc="레버리지·가상자산 비중이 높아 수익도 손실도 극단적이에요. 같은 성장에 베팅하더라도 '지수 분산'으로 바꾸면 생존 확률이 크게 올라갑니다.";etfs=[["ACE 미국나스닥100","레버리지 대신 지수로"],["ACE KRX금현물","급락 방어용 한 스푼"],["ACE 미국30년국채액티브","포트폴리오 안전벨트"]];}
+  $("#mapTier").textContent=tier;$("#mapTier").style.color=color;$("#mapTitle").textContent=title;$("#mapDesc").textContent=desc;
+  const box=$("#mapEtfs");box.innerHTML="";
+  etfs.forEach(([en,ed])=>{const d=document.createElement("div");d.className="etf";d.innerHTML=`<span class="dot" style="background:${color}"></span><span class="en">${en}</span><span class="ed">${ed}</span>`;box.appendChild(d);});
+}
+
+setBadge();
+recompute();
+</script>
+</body>
+</html>
